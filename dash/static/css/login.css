@@ -1,0 +1,25 @@
+:root {
+    --input-padding-x: 1.5rem;
+    --input-padding-y: .75rem;
+}
+
+body {
+    background-color: white !important;
+}
+
+#signbox{
+    background-image: url("../Signin.jpg");
+    background-size: cover;
+    border-color: white;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .1) !important;
+    border-radius: 15px;
+}
+
+#googlebutton {
+    color: white !important;
+    background-color: #223871 !important;
+    font-weight: bold;
+    border-radius: 22px;
+    font-size: 16px;
+    width: 80%;
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="../static/kurio-favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
+
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token() }}";
+        $(function fetchdata() {
+            $('#date_timepicker_start').datetimepicker();
+            $('#date_timepicker_end').datetimepicker();
+
+            $('a#process_input').bind('click', function () {
+                var start_date = validate_startdate($('#date_timepicker_start').val());
+                var end_date = validate_enddate($('#date_timepicker_end').val());
+                $.post('/search', {
+                        keyword: $('input[name=keyword]').val(),
+                        service: $('#service').val(),
+                        date_timepicker_start: start_date,
+                        date_timepicker_end: end_date
+                    },
+                    function fetchdata(data) {
+                        $('#tarea').html(data);
+                    });
+            });
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!/^(HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    }
+                }
+            });
+        });
+
+        function validate_startdate(start_date) {
+            if (start_date) {
+                start_date = new Date($('#date_timepicker_start').val()).toISOString();
+            } else {
+                start_date = $('#date_timepicker_start').val()
+            }
+            return start_date;
+        }
+
+        function validate_enddate(end_date) {
+            if (end_date) {
+                end_date = new Date($('#date_timepicker_end').val()).toISOString();
+            } else {
+                end_date = $('#date_timepicker_end').val();
+            }
+            return end_date;
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function loader() {
+            $(document).ajaxStart(function () {
+                $("#loader").css("display", "block");
+                $("#tarea").text("");
+            });
+            $(document).ajaxComplete(function () {
+                $("#loader").css("display", "none");
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function datetimepicker() {
+            jQuery(function () {
+                jQuery('#date_timepicker_start').datetimepicker({
+                    format: 'Y-m-d H:i',
+                    onShow: function (ct) {
+                        this.setOptions({
+                            maxDate: jQuery('#date_timepicker_end').val() ? jQuery('#date_timepicker_end').val() : false
+                        })
+                    },
+                    timepicker: true
+                });
+                jQuery('#date_timepicker_end').datetimepicker({
+                    defaultDate: new Date(),
+                    // defaultTime:'00:00',
+                    // value: new Date() + '00:00',
+                    format: 'Y-m-d H:i',
+                    onShow: function (ct) {
+                        this.setOptions({
+                            minDate: jQuery('#date_timepicker_start').val() ? jQuery('#date_timepicker_start').val() : false
+                        })
+                    },
+                    timepicker: true
+                });
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        window.onload = populateselect();
+
+        function populateselect() {
+            var xhr = new XMLHttpRequest(),
+                method = 'GET',
+                url = '/kubernetes/labels/app/keyword';
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    var service = JSON.parse(xhr.responseText);
+
+                    var ele = document.getElementById('service');
+                    for (var i = 0; i < service.length; i++) {
+                        ele.innerHTML = ele.innerHTML + '<option value="' + service[i].key + '">' + service[i].key + '</option>';
+                    }
+                }
+            };
+            xhr.open(method, url, true);
+            xhr.send();
+        }
+    </script>
+    <script type="text/javascript">
+        $(function tooltip() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    {% if title %}
+        <title>Centralized Log - {{ title }}</title>
+    {% else %}
+        <title>Centralized Log</title>
+    {% endif %}
+
+</head>
+
+<body class="body">
+<nav class="navbar navbar-expand-sm navbar-light bg-default" id="navbarHeader">
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a href="/" class="navbar-brand mr-auto" id="logo"><img class="ml-3" src="../static/dashlog_logo.png" alt="Logo"
+                                                  style="width:250px;"
+                                                  data-toggle="tooltip"
+                                                  data-placement="bottom" title="Centralized Log"
+                                                  id="logo_image"></a>
+    <div class="form-inline ml-auto">
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav d-flex align-items-center justify-content-center">
+                <li class="nav-item">
+                    <i class="fa fa-adjust fa-lg mr-1" id="adjust_icon" data-toggle="tooltip"
+                       title="Dark Mode/Light Mode" data-placement="bottom"></i>
+                    <input type="checkbox" id="switch" name="theme"/><label for="switch" data-toggle="tooltip"
+                                                                            title="Switch Toggle"
+                                                                            data-placement="bottom">Toggle</label>
+                </li>
+            </ul>
+            <ul class="navbar-nav mr-5 ml-3">
+                <li class="nav-item">
+                    <form method="get" action="/google/logout">
+                        <button class="btn btn-default ml-2" id="out" data-toggle="tooltip"
+                                title="Sign Out">
+                            <i class="fa fa-sign-out-alt mr-1"></i>
+                            Sign Out
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+{% block content %}{% endblock %}
+<script type="text/javascript">
+    var checkbox = document.getElementById('switch');
+    checkbox.addEventListener('change', function darkmode() {
+
+        if (this.checked) {
+            trans();
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('logo_image').src = '../static/white_dashlog_logo.png';
+        } else {
+            trans();
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.getElementById('logo_image').src = '../static/dashlog_logo.png';
+        }
+
+    });
+
+    let trans = function () {
+        document.documentElement.classList.add('transition');
+        window.setTimeout(function () {
+            document.documentElement.classList.remove('transition')
+        }, 1000)
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container" id="home">
+        <div class="d-flex align-items-center justify-content-center mt-5">
+            <div class="tarea col-lg-12 form-control" id="tarea">
+            </div>
+            <div class="position-absolute" id="loader"
+                 style="display:none;">
+                <img class="mb-5" src="../static/loader.gif" height="100"/>
+            </div>
+        </div>
+        <form class="form" name="form" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="container mt-4 ml-1">
+                <div class="row">
+                    <div class="col-lg col-sm-12 col-md-3 mt-3">
+                        <input type="text" class="form-control" name="keyword" id="keyword" value=""
+                               placeholder="Enter Keyword . . " autocomplete="off" data-toggle="tooltip"
+                               title="Input Keyword" data-placement="bottom">
+                    </div>
+                    <div class="col-lg col-sm-12 col-md-3 mt-3 input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup1">
+                                <i class="far fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <input id="date_timepicker_start" name="date_timepicker_start" type="text"
+                               class="form-control"
+                               placeholder="Start Date" data-toggle="tooltip" title="Pick Start Date"
+                               data-placement="bottom">
+                    </div>
+                    <div class="col-lg col-sm-12 col-md-3 mt-3 input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup2">
+                                <i class="far fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <input id="date_timepicker_end" name="date_timepicker_end" type="text" class="form-control"
+                               placeholder="End Date" data-toggle="tooltip" title="Pick End Date"
+                               data-placement="bottom">
+                    </div>
+                    <div class="col-lg col-sm-12 col-md-3 mt-3">
+                        <select required class="form-control" name="service" id="service" data-toggle="tooltip"
+                                title="Select Service" data-placement="bottom">
+                            <option value="" disabled selected>Select Service</option>
+                            <option value="">All Service</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-5 col-sm-3 col-md-3 mt-3">
+                        <a href=# id="process_input">
+                            <button class="btn btn-default " id="btn" type="button" data-toggle="tooltip"
+                                    data-placement="bottom" title="Search Log">
+                                <i class="fa btn-md fa-search mr-1"></i>
+                                Search
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+    {{ super () }}
+{% endblock %}

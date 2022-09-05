@@ -1,0 +1,10 @@
+flask
+gunicorn
+python-dotenv
+elasticsearch>=6.0.0,<7.0.0
+elasticsearch-dsl>=6.0.0,<7.0.0
+authlib==0.11
+google-api-python-client
+google-auth
+flask-cors
+flask-wtf

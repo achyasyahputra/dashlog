@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="../static/kurio-favicon.png">
+    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    {% if title %}
+        <title>Centralize Log - {{ title }}</title>
+    {% else %}
+        <title>Centralize Log Login</title>
+    {% endif %}
+</head>
+<body>
+<br><br><br><br><br><br><br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9 col-md-9 col-sm-9 card mx-auto mt-5" style="height: 25rem;" id="signbox">
+            <form class="form-signin mt-5" method="GET" action="google/login">
+                <h5 class="card-title text-center col-lg-12 col-md-12 col-sm-12"><img src="../static/dashlog_logo.png" alt="Logo"; class="kuriosignin mb-1 col-lg-6 col-md-12 mt-5"></h5>
+                <button class="btn btn-lg btn-google text-uppercase btn-block mx-auto mt-4 col-lg-4 col-md-6 col-sm-6" type="submit" id="googlebutton" data-toggle="tooltip" title="Sign In with Google">
+                    <i class="fab fa-google mr-2"></i>Sign in with Google
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

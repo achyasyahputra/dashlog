@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  dashlog:
+    build: .
+    env_file:
+      - .env
+    image: dashlog:latest
+    ports:
+      - ${PORT}:7723
+    container_name: dashlog
+    restart: on-failure

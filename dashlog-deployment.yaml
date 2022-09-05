@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-dashlog
+  labels:
+    app: dashlog
+data:
+  DEBUG: "False"
+  PORT: "7723"
+  GUNICORN_NUM_WORKERS: "4"
+  GUNICORN_NUM_THREADS: "8"
+  ES_HOST: "localhost"
+  ES_PORT: "9200"
+  INDEX_NAME: "logging"
+  AUTH_REDIRECT_URI: "http://localhost:7723/google/auth"
+  BASE_URI: "http://localhost:7723"
+  CLIENT_ID: "the Outh client ID"
+  CLIENT_SECRET: "the Oauth client secret"
+  SECRET_KEY: "something random and secret"
+  DOMAIN_NAME: "domain name"
+  EXCLUDE_EMAIL: "owner email"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashlog-deployment
+  labels:
+    app: dashlog
+spec:
+  selector:
+    matchLabels:
+      app: dashlog
+  template:
+    metadata:
+      labels:
+        app: dashlog
+    spec:
+      containers:
+        - name: dashlog
+          image: dashlog:latest
+          envFrom:
+            - configMapRef: env-dashlog
+          ports:
+            - containerPort: 7723
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: dahlog-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: dashlog-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashlog-service
+  labels:
+    app: dashlog
+spec:
+  selector:
+    app: dashlog
+  type: LoadBalancer
+  ports:
+    - targetPort: 7723
+      port: 7723
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashlog-ingress
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - backend:
+              serviceName: dashlog-service
+              servicePort: 7723
